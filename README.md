@@ -1,8 +1,27 @@
-# UnionOTP
+# GoogleOTP2Other
 
 Google Authenticator 迁移解密与通用二维码转换工具。
 
 支持扫描或上传 Google Authenticator 导出的迁移二维码，在浏览器本地离线解密 Protobuf 载荷，还原标准 Base32 密钥，并实时生成标准 TOTP/HOTP 绑定二维码，供 1Password、Bitwarden、Microsoft Authenticator、2FAS、Aegis 等双重认证工具直接导入。
+
+---
+
+## 界面预览
+
+### 1. 输入与载入界面
+支持屏幕截图直接粘贴（⌘V / Ctrl+V）、图片拖拽上传、摄像头实时扫码及文本链接解析：
+
+![输入界面](docs/images/input-interface.png)
+
+### 2. 二维码扫描解密后界面
+自动解析出全部 OTP 账号，实时计算 30 秒动态口令及进度倒计时，支持搜索、多批次追加合并与批量导出：
+
+![二维码扫描解密后界面](docs/images/decrypted-interface.png)
+
+### 3. 单个账号二维码与详情
+点击任意账号即可查看标准 TOTP 绑定二维码，供 1Password、Bitwarden、2FAS 等应用直接扫码绑定，或一键复制密钥与 otpauth URI：
+
+![二维码详情界面](docs/images/qr-modal.png)
 
 ---
 
@@ -25,8 +44,8 @@ Google Authenticator 迁移解密与通用二维码转换工具。
 3. 验证身份后勾选需要导出的账号，点击 **下一步**。
 4. 屏幕上将生成一个或多个迁移二维码（若账号较多，会分页展示）。
 
-### 步骤 2：在 UnionOTP 中解析
-- **方式 A（截图粘贴）**：截图后直接在 UnionOTP 页面按下 `Ctrl + V` 或 `⌘ + V` 粘贴。
+### 步骤 2：在 GoogleOTP2Other 中解析
+- **方式 A（截图粘贴）**：截图后直接在 GoogleOTP2Other 页面按下 `Ctrl + V` 或 `⌘ + V` 粘贴。
 - **方式 B（上传图片）**：将二维码图片拖拽至上传区域，或点击选择文件。
 - **方式 C（摄像头扫码）**：点击「摄像头扫码」，将手机上的二维码对准取景框。
 - **方式 D（链接解析）**：若已有解码出的 `otpauth-migration://offline?data=...` 文本，可在「文本链接」选项卡中直接粘贴。
