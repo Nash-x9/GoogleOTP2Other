@@ -16,7 +16,7 @@ export const Header: FC<HeaderProps> = ({ onReset, hasData }) => {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-medium text-sm text-[#f4f4f5] tracking-tight">UnionOTP</span>
+              <span className="font-medium text-sm text-[#f4f4f5] tracking-tight">GoogleOTP2Other</span>
               <span className="text-[11px] px-1.5 py-0.5 rounded bg-[#1c1f2e] text-[#8e98b0] border border-[#282d42]">
                 Google OTP 迁移解密
               </span>

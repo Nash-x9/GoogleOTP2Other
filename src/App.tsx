@@ -210,7 +210,7 @@ export function App() {
 
       {/* Minimal Footer */}
       <footer className="border-t border-[#1a1c26] py-4 text-center text-[11px] text-[#555a6d]">
-        <span>UnionOTP · 本地纯离线处理，保障凭据安全私密</span>
+        <span>GoogleOTP2Other · 本地纯离线处理，保障凭据安全私密</span>
       </footer>
     </div>
   )
