@@ -1,5 +1,9 @@
 # GoogleOTP2Other
 
+<p align="left">
+  <b><a href="README.md">简体中文</a></b> | <b><a href="README_en.md">English</a></b>
+</p>
+
 > Google Authenticator 迁移解密与通用二维码转换工具。
 
 [![GitHub License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
@@ -13,8 +17,6 @@
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Nash-x9/GoogleOPT2Other)
 &nbsp;
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Nash-x9/GoogleOPT2Other)
-&nbsp;
-[![Deploy to Deno](https://shield.deno.dev/deno-deploy)](https://dash.deno.com/new?url=https://github.com/Nash-x9/GoogleOPT2Other)
 
 ---
 
@@ -43,43 +45,37 @@
 
 ## 免费静态托管与一键部署
 
-本项目打包后为单一自包含的纯静态 HTML，所有数据处理纯客户端运行。点击下方任意图标即可直达对应平台快速上线：
+本项目所有数据加解密与动态计算均在浏览器端完成，支持各平台自动拉取源码在线构建。点击下方任意图标即可直达对应平台快速上线：
 
 | 托管平台 | 一键部署图标 | 说明与配置支持 |
 | :--- | :--- | :--- |
+| **GitHub Pages** | [![Fork & Deploy](https://img.shields.io/badge/Fork_%26_Deploy-GitHub_Pages-22272e?logo=github&logoColor=white)](https://github.com/Nash-x9/GoogleOPT2Other/fork) | **必须先在仓库开启 Pages**（见下方说明）。通过 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) 源码在线构建发布 |
 | **Cloudflare Workers / Pages** | [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Nash-x9/GoogleOPT2Other) | 免费全球 CDN 加速。已预置 [`wrangler.toml`](wrangler.toml) 与 [`wrangler.jsonc`](wrangler.jsonc) |
-| **Vercel** | [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Nash-x9/GoogleOPT2Other) | 自动识别 Vite 框架并编译。已预置 [`vercel.json`](vercel.json) |
-| **Netlify** | [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Nash-x9/GoogleOPT2Other) | 一键连接 Git 仓库自动发布。已预置 [`netlify.toml`](netlify.toml) |
-| **Deno Deploy** | [![Deploy to Deno](https://shield.deno.dev/deno-deploy)](https://dash.deno.com/new?url=https://github.com/Nash-x9/GoogleOPT2Other) | 边缘节点托管。已预置 [`deno.json`](deno.json) 与 [`server.ts`](server.ts) 静态服务 |
-| **GitHub Pages** | [![Fork & Deploy](https://img.shields.io/badge/Fork_%26_Deploy-GitHub_Pages-22272e?logo=github&logoColor=white)](https://github.com/Nash-x9/GoogleOPT2Other/fork) | 已内置 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)，Fork 后开启 Pages 即全自动构建 |
-| **纯本地离线使用** | [下载 dist/index.html](https://raw.githubusercontent.com/Nash-x9/GoogleOPT2Other/main/dist/index.html) | 无需任何服务器或环境，单文件双击即可在浏览器内完全断网使用 |
+| **Vercel** | [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Nash-x9/GoogleOPT2Other) | 自动拉取源码编译。已预置 [`vercel.json`](vercel.json) |
+| **Netlify** | [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Nash-x9/GoogleOPT2Other) | 一键连接 Git 仓库自动编译。已预置 [`netlify.toml`](netlify.toml) |
 
-### 平台手动部署与构建说明
+### GitHub Pages 部署必读说明
+
+> [!WARNING]
+> **前置要求（必须手动开启）**：
+> GitHub 仓库默认并未启用 Pages 服务。如果未手动开启，直接触发 Actions 会因无权限而报错（`HttpError: Not Found`）。
+> **正确开启步骤：**
+> 1. 进入仓库右上角 **Settings** -> 左侧菜单 **Pages**。
+> 2. 在 **Build and deployment** > **Source** 下拉选择框中，将默认的 `Deploy from a branch` 修改为 **`GitHub Actions`**。
+> 3. 保存后，后续推送代码或在 Actions 页面手动点击 **Run workflow** 即可全自动构建并部署成功。
+
+### Cloudflare 命令行手动部署
 
 <details>
-<summary><b>展开查看各平台命令行或手动部署流程</b></summary>
+<summary><b>展开查看 Wrangler CLI 手动部署命令</b></summary>
 
-#### 1. GitHub Pages
-1. 点击上方 **Fork & Deploy** 复制仓库到你的 GitHub 账号。
-2. 进入仓库 **Settings** -> **Pages**，在 **Build and deployment** -> **Source** 中选择 **GitHub Actions**。
-3. 之后任何提交均会自动触发 CI/CD 构建部署。
-
-#### 2. Cloudflare CLI 手动部署
 ```bash
-# 本地编译产物
+# 1. 本地安装依赖并编译生成 dist
+pnpm install
 pnpm build
 
-# 使用 Wrangler 直接上传至 Cloudflare Pages
+# 2. 使用 Wrangler 直接上传至 Cloudflare Pages
 npx wrangler pages deploy dist --project-name=googleotp2other
-```
-
-#### 3. Deno CLI 手动部署
-```bash
-# 启动本地 Deno 静态服务
-deno task start
-
-# 使用 Deployctl 命令行部署
-deployctl deploy --project=googleotp2other server.ts
 ```
 
 </details>
@@ -89,7 +85,7 @@ deployctl deploy --project=googleotp2other server.ts
 ## 核心特性
 
 - **纯客户端离线处理**：所有二维码识别、Protobuf 反序列化、Base32 编解码及 TOTP 动态码计算均在浏览器端完成，无任何网络请求，敏感凭据不出本地。
-- **单文件便携运行**：打包后生成一个完全独立的 `index.html`，无需任何 Web 服务器，本地双击即可离线使用。
+- **单文件便携构建**：本地构建后生成一个完全独立的 `index.html`，无需任何 Web 服务器，双击即可完全离线使用。
 - **多种导入方式**：支持屏幕截图粘贴（Ctrl+V / ⌘V）、图片拖拽上传、摄像头实时扫码，或直接输入 `otpauth-migration://` 链接。
 - **多批次合并导出**：Google 导出的账号较多时会自动生成多张二维码，支持连续追加扫描合并。
 - **动态码实时校验**：内置 RFC 6238 标准 TOTP 引擎，实时计算 30 秒动态口令及倒计时进度，便于与原手机数据比对确认。
@@ -133,12 +129,12 @@ pnpm dev
 ```
 启动后在浏览器访问 `http://localhost:5173`。
 
-### 2. 构建纯静态单文件（推荐）
+### 2. 本地构建纯静态单文件
 ```bash
 pnpm run build
 ```
-构建完成后会在 `dist/` 目录下生成一个完全自包含的 **`dist/index.html`** 文件：
-- **双击即用**：直接双击打开该 HTML 文件即可使用，即使拔掉网线也能完全离线运行。
+执行后会在本地生成一个完全自包含的 **`dist/index.html`** 文件：
+- **离线便携**：直接双击打开该 HTML 文件即可使用，即使拔掉网线也能完全离线运行。
 - **静态托管**：可直接上传至 Cloudflare Pages、GitHub Pages、Vercel，或放置在任意 Nginx / Apache 静态目录下。
 
 ---
