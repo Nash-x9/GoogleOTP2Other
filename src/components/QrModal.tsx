@@ -2,6 +2,7 @@ import { useRef, useState, type FC } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { X, Copy, Check, Download } from 'lucide-react'
 import type { DecodedOtpAccount } from '../lib/google-authenticator'
+import { useI18n } from '../lib/i18n.tsx'
 
 interface QrModalProps {
   account: DecodedOtpAccount | null
@@ -9,6 +10,7 @@ interface QrModalProps {
 }
 
 export const QrModal: FC<QrModalProps> = ({ account, onClose }) => {
+  const { t } = useI18n()
   const [copiedUri, setCopiedUri] = useState(false)
   const [copiedSecret, setCopiedSecret] = useState(false)
   const svgRef = useRef<SVGSVGElement | null>(null)
@@ -72,10 +74,10 @@ export const QrModal: FC<QrModalProps> = ({ account, onClose }) => {
         {/* Header */}
         <div className="mb-4">
           <div className="text-base font-semibold text-[#f4f4f5] tracking-tight">
-            {account.issuer || 'OTP 验证器'}
+            {account.issuer || t.unknownService}
           </div>
           <div className="text-xs text-[#8a91a5] font-mono truncate mt-0.5">
-            {account.name}
+            {account.name || t.unnamedAccount}
           </div>
         </div>
 
@@ -91,7 +93,7 @@ export const QrModal: FC<QrModalProps> = ({ account, onClose }) => {
         </div>
 
         <p className="text-[12px] text-center text-[#7e859b] mt-3">
-          使用 1Password / Bitwarden / Microsoft / 2FAS 扫描此二维码直接导入
+          {t.qrModalTip}
         </p>
 
         {/* Secret & Info Details */}
@@ -99,7 +101,7 @@ export const QrModal: FC<QrModalProps> = ({ account, onClose }) => {
           <div className="p-2.5 rounded-lg bg-[#0b0c13] border border-[#1e202e] flex items-center justify-between">
             <div className="min-w-0 flex-1 mr-2">
               <div className="text-[10px] text-[#63697e] uppercase font-semibold tracking-wider">
-                Base32 密钥明文 (Secret)
+                {t.secretPlaintext}
               </div>
               <div className="font-mono text-xs text-[#cfd4e6] truncate select-all">
                 {account.secretBase32}
@@ -108,7 +110,7 @@ export const QrModal: FC<QrModalProps> = ({ account, onClose }) => {
             <button
               onClick={handleCopySecret}
               className="p-1.5 rounded-md hover:bg-[#1a1c29] text-[#7d849b] hover:text-[#e2e5f2] transition-colors"
-              title="复制密钥"
+              title={t.copyCodeTitle}
             >
               {copiedSecret ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
             </button>
@@ -116,13 +118,13 @@ export const QrModal: FC<QrModalProps> = ({ account, onClose }) => {
 
           <div className="grid grid-cols-2 gap-2 text-[11px]">
             <div className="p-2 rounded-lg bg-[#0b0c13] border border-[#1e202e]">
-              <span className="text-[#63697e]">算法 / 位数：</span>
+              <span className="text-[#63697e]">{t.algoDigits}</span>
               <span className="text-[#cbd1e5] font-medium ml-1">
-                {account.algorithm} · {account.digits}位
+                {account.algorithm} · {account.digits}{t.digitsSuffix}
               </span>
             </div>
             <div className="p-2 rounded-lg bg-[#0b0c13] border border-[#1e202e]">
-              <span className="text-[#63697e]">类型 / 周期：</span>
+              <span className="text-[#63697e]">{t.typePeriod}</span>
               <span className="text-[#cbd1e5] font-medium ml-1">
                 {account.type.toUpperCase()} · {account.period}s
               </span>
@@ -137,7 +139,7 @@ export const QrModal: FC<QrModalProps> = ({ account, onClose }) => {
             className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-medium bg-[#1a1c29] hover:bg-[#25283a] text-[#dce0ef] border border-[#2b3046] transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>保存二维码 PNG</span>
+            <span>{t.saveQrPng}</span>
           </button>
 
           <button
@@ -145,7 +147,7 @@ export const QrModal: FC<QrModalProps> = ({ account, onClose }) => {
             className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-medium bg-[#5e6ad2] hover:bg-[#6e7ae3] text-white transition-colors"
           >
             {copiedUri ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{copiedUri ? '已复制 URI' : '复制 otpauth URI'}</span>
+            <span>{copiedUri ? t.copiedUriBtn : t.copyUriBtn}</span>
           </button>
         </div>
       </div>

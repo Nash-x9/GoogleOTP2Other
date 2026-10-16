@@ -2,6 +2,7 @@ import { useState, useEffect, type FC, type MouseEvent } from 'react'
 import { Copy, Check, QrCode, Eye, EyeOff } from 'lucide-react'
 import type { DecodedOtpAccount } from '../lib/google-authenticator'
 import { generateTotpCode } from '../lib/totp'
+import { useI18n } from '../lib/i18n.tsx'
 
 interface AccountCardProps {
   account: DecodedOtpAccount
@@ -16,6 +17,7 @@ export const AccountCard: FC<AccountCardProps> = ({
   progressPercent,
   onViewQr,
 }) => {
+  const { t } = useI18n()
   const [totpCode, setTotpCode] = useState<string>('------')
   const [showSecret, setShowSecret] = useState(false)
   const [copiedCode, setCopiedCode] = useState(false)
@@ -72,10 +74,10 @@ export const AccountCard: FC<AccountCardProps> = ({
             </div>
             <div className="min-w-0">
               <div className="text-xs font-semibold text-[#f0f2f8] truncate">
-                {account.issuer || '未知服务'}
+                {account.issuer || t.unknownService}
               </div>
               <div className="text-[11px] text-[#71778c] font-mono truncate" title={account.name}>
-                {account.name}
+                {account.name || t.unnamedAccount}
               </div>
             </div>
           </div>
@@ -84,7 +86,7 @@ export const AccountCard: FC<AccountCardProps> = ({
           <button
             onClick={() => onViewQr(account)}
             className="p-1.5 rounded-lg bg-[#181926] hover:bg-[#24273b] border border-[#292d42] text-[#8e96b3] hover:text-[#f0f2f8] transition-colors shrink-0"
-            title="查看并扫码导入"
+            title={t.viewQrTitle}
           >
             <QrCode className="w-4 h-4" />
           </button>
@@ -96,12 +98,12 @@ export const AccountCard: FC<AccountCardProps> = ({
             <span
               onClick={handleCopyCode}
               className="font-mono text-xl font-bold tracking-wider text-[#e6e9f5] cursor-pointer hover:text-white transition-colors"
-              title="点击复制动态口令"
+              title={t.copyCodeTitle}
             >
               {formattedCode}
             </span>
             <span className="text-[10px] text-[#555a6e] font-mono">
-              {account.digits}位 {account.algorithm}
+              {account.digits}{t.digitsSuffix} {account.algorithm}
             </span>
           </div>
 
@@ -140,7 +142,7 @@ export const AccountCard: FC<AccountCardProps> = ({
             <button
               onClick={handleCopyCode}
               className="p-1 rounded text-[#71778c] hover:text-[#e4e7f2] hover:bg-[#1a1c29] transition-colors"
-              title="复制验证码"
+              title={copiedCode ? t.codeCopied : t.copyCodeTitle}
             >
               {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
             </button>
@@ -152,7 +154,7 @@ export const AccountCard: FC<AccountCardProps> = ({
       <div className="mt-3 pt-3 border-t border-[#1d1f2d] space-y-2">
         <div className="flex items-center justify-between text-[11px]">
           <div className="flex items-center gap-1.5 text-[#5f657a] min-w-0 mr-2">
-            <span>密钥:</span>
+            <span>{t.secretLabel}</span>
             {showSecret ? (
               <span className="font-mono text-[#cbd1e5] truncate select-all">{account.secretBase32}</span>
             ) : (
@@ -163,7 +165,7 @@ export const AccountCard: FC<AccountCardProps> = ({
           <button
             onClick={() => setShowSecret(!showSecret)}
             className="text-[#6c7288] hover:text-[#c7ccd9] transition-colors shrink-0"
-            title={showSecret ? '隐藏密钥' : '显示密钥明文'}
+            title={showSecret ? t.hideSecret : t.showSecret}
           >
             {showSecret ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
           </button>
@@ -175,14 +177,14 @@ export const AccountCard: FC<AccountCardProps> = ({
             className="text-[11px] text-[#787f98] hover:text-[#d3d8ed] flex items-center gap-1 hover:underline transition-colors"
           >
             {copiedUri ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-            <span>{copiedUri ? '已复制 URI' : '复制 otpauth URI'}</span>
+            <span>{copiedUri ? t.copiedUri : t.copyUri}</span>
           </button>
 
           <button
             onClick={() => onViewQr(account)}
             className="text-[11px] text-[#5e6ad2] hover:text-[#7883e5] font-medium flex items-center gap-1 transition-colors"
           >
-            <span>显示二维码</span>
+            <span>{t.showQr}</span>
             <span aria-hidden="true">&rarr;</span>
           </button>
         </div>

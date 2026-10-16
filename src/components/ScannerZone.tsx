@@ -9,12 +9,14 @@ import {
   ClipboardPaste,
 } from 'lucide-react'
 import { scanQrFromImageFile, scanQrFromVideo } from '../lib/qr'
+import { useI18n } from '../lib/i18n.tsx'
 
 interface ScannerZoneProps {
   onScanSuccess: (rawUri: string) => void
 }
 
 export const ScannerZone: FC<ScannerZoneProps> = ({ onScanSuccess }) => {
+  const { t } = useI18n()
   const [activeTab, setActiveTab] = useState<'upload' | 'camera' | 'text'>('upload')
   const [textInput, setTextInput] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -53,14 +55,14 @@ export const ScannerZone: FC<ScannerZoneProps> = ({ onScanSuccess }) => {
         try {
           onScanSuccess(pastedText.trim())
         } catch (err: any) {
-          setError(err.message || '解析失败')
+          setError(err.message || t.parseFailed)
         }
       }
     }
 
     window.addEventListener('paste', handlePaste)
     return () => window.removeEventListener('paste', handlePaste)
-  }, [onScanSuccess])
+  }, [onScanSuccess, t.parseFailed])
 
   // Stop camera when switching tab or unmounting
   const stopCamera = () => {
@@ -108,9 +110,9 @@ export const ScannerZone: FC<ScannerZoneProps> = ({ onScanSuccess }) => {
           }
         }, 200)
       }
-    } catch (err: any) {
+    } catch {
       stopCamera()
-      setError('无法访问摄像头，请检查浏览器权限，或直接上传二维码截图')
+      setError(t.cameraError)
     }
   }
 
@@ -122,7 +124,7 @@ export const ScannerZone: FC<ScannerZoneProps> = ({ onScanSuccess }) => {
       const qrData = await scanQrFromImageFile(file)
       onScanSuccess(qrData)
     } catch (err: any) {
-      setError(err.message || '二维码识别失败')
+      setError(err.message || t.qrScanFailed)
     } finally {
       setIsProcessing(false)
     }
@@ -152,7 +154,7 @@ export const ScannerZone: FC<ScannerZoneProps> = ({ onScanSuccess }) => {
     try {
       onScanSuccess(textInput.trim())
     } catch (err: any) {
-      setError(err.message || '解析失败')
+      setError(err.message || t.parseFailed)
     }
   }
 
@@ -170,7 +172,7 @@ export const ScannerZone: FC<ScannerZoneProps> = ({ onScanSuccess }) => {
             }`}
           >
             <Upload className="w-3.5 h-3.5" />
-            <span>上传 / 粘贴图片</span>
+            <span>{t.tabUpload}</span>
           </button>
 
           <button
@@ -185,7 +187,7 @@ export const ScannerZone: FC<ScannerZoneProps> = ({ onScanSuccess }) => {
             }`}
           >
             <Camera className="w-3.5 h-3.5" />
-            <span>摄像头扫码</span>
+            <span>{t.tabCamera}</span>
           </button>
 
           <button
@@ -197,7 +199,7 @@ export const ScannerZone: FC<ScannerZoneProps> = ({ onScanSuccess }) => {
             }`}
           >
             <LinkIcon className="w-3.5 h-3.5" />
-            <span>文本链接</span>
+            <span>{t.tabText}</span>
           </button>
         </div>
       </div>
@@ -235,15 +237,12 @@ export const ScannerZone: FC<ScannerZoneProps> = ({ onScanSuccess }) => {
           </div>
 
           <div className="text-sm font-medium text-[#ededef] mb-1">
-            {isProcessing ? '正在解密二维码...' : '点击或拖拽上传 Google 导出的二维码'}
+            {isProcessing ? t.uploadProcessing : t.uploadTitle}
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-[#6e7487] mt-1">
-            <span>支持 PNG, JPG, WebP 格式</span>
-            <span>·</span>
-            <span className="flex items-center gap-1 text-[#8790aa]">
-              <ClipboardPaste className="w-3 h-3" /> 支持直接按 ⌘V / Ctrl+V 粘贴截图
-            </span>
+          <div className="flex items-center gap-1.5 text-xs text-[#6e7487] mt-1">
+            <ClipboardPaste className="w-3.5 h-3.5 text-[#8790aa]" />
+            <span>{t.uploadHint}</span>
           </div>
         </div>
       )}
@@ -267,13 +266,13 @@ export const ScannerZone: FC<ScannerZoneProps> = ({ onScanSuccess }) => {
             {!isCameraActive && (
               <div className="absolute inset-0 bg-[#08080c]/90 flex flex-col items-center justify-center text-xs text-[#7d849a]">
                 <Camera className="w-8 h-8 mb-2 text-[#464c63]" />
-                <span>正在启动摄像头...</span>
+                <span>{t.cameraStarting}</span>
               </div>
             )}
           </div>
 
           <div className="flex items-center justify-between w-full max-w-md mt-3">
-            <span className="text-xs text-[#71778c]">将 Google Authenticator 导出的二维码对准方框</span>
+            <span className="text-xs text-[#71778c]">{t.cameraHint}</span>
             <button
               onClick={() => {
                 stopCamera()
@@ -281,7 +280,7 @@ export const ScannerZone: FC<ScannerZoneProps> = ({ onScanSuccess }) => {
               }}
               className="text-xs text-[#8f96ad] hover:text-[#e4e7f2] flex items-center gap-1"
             >
-              <X className="w-3.5 h-3.5" /> 关闭摄像头
+              <X className="w-3.5 h-3.5" /> {t.cameraClose}
             </button>
           </div>
         </div>
@@ -294,7 +293,7 @@ export const ScannerZone: FC<ScannerZoneProps> = ({ onScanSuccess }) => {
             <textarea
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
-              placeholder="粘贴 Google Authenticator 导出的链接 (otpauth-migration://offline?data=...) 或原始 data 参数"
+              placeholder={t.textPlaceholder}
               rows={3}
               className="w-full bg-[#12131d] border border-[#262938] focus:border-[#5e6ad2] rounded-lg p-3 text-xs text-[#e1e4ee] placeholder-[#555a6d] outline-none font-mono resize-none transition-colors"
             />
@@ -305,7 +304,7 @@ export const ScannerZone: FC<ScannerZoneProps> = ({ onScanSuccess }) => {
               disabled={!textInput.trim()}
               className="px-4 py-1.5 rounded-lg text-xs font-medium bg-[#5e6ad2] hover:bg-[#6c79e6] disabled:opacity-40 disabled:cursor-not-allowed text-white transition-colors"
             >
-              解析并解密
+              {t.textParseBtn}
             </button>
           </div>
         </form>

@@ -15,8 +15,10 @@ import {
   type MigrationBatchInfo,
 } from './lib/google-authenticator'
 import { getRemainingPeriodSeconds } from './lib/totp'
+import { useI18n } from './lib/i18n.tsx'
 
 export function App() {
+  const { t } = useI18n()
   const [accounts, setAccounts] = useState<DecodedOtpAccount[]>([])
   const [batchInfo, setBatchInfo] = useState<MigrationBatchInfo | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -39,7 +41,7 @@ export function App() {
     try {
       const result = parseMigrationUri(rawUri)
       if (!result.accounts.length) {
-        alert('解析成功，但该二维码中未包含任何 OTP 账户。')
+        alert(t.parseNoAccounts)
         return
       }
 
@@ -57,12 +59,12 @@ export function App() {
       setBatchInfo(result)
       setShowAppendScanner(false)
     } catch (err: any) {
-      alert(`解密失败: ${err.message || '格式错误'}`)
+      alert(`${t.parseFailed}: ${err.message || 'error'}`)
     }
   }
 
   const handleReset = () => {
-    if (confirm('确定要清空所有已解析的 OTP 数据吗？')) {
+    if (confirm(t.resetConfirm)) {
       setAccounts([])
       setBatchInfo(null)
       setShowAppendScanner(false)
@@ -90,10 +92,10 @@ export function App() {
         {accounts.length === 0 && (
           <div className="max-w-2xl mx-auto mb-8 text-center">
             <h1 className="text-2xl font-semibold tracking-tight text-[#f4f4f5] mb-2">
-              Google Authenticator 迁移解密
+              {t.heroTitle}
             </h1>
             <p className="text-xs text-[#8a91a5] leading-relaxed max-w-lg mx-auto">
-              扫描或上传从 Google 身份验证器导出的迁移二维码，自动反序列化解密并生成标准绑定二维码，供 1Password、Bitwarden、Microsoft Authenticator 等任意工具直接导入。
+              {t.heroDesc}
             </p>
           </div>
         )}
@@ -104,14 +106,14 @@ export function App() {
             <div className="bg-[#111219] border border-[#232533] rounded-2xl p-5 shadow-xl">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-semibold text-[#cfd4e6] tracking-wide uppercase">
-                  {showAppendScanner ? '扫描追加批次二维码' : '第一步：载入 Google 迁移二维码'}
+                  {showAppendScanner ? t.scannerAppend : t.scannerStep1}
                 </span>
                 {showAppendScanner && (
                   <button
                     onClick={() => setShowAppendScanner(false)}
                     className="text-xs text-[#81879c] hover:text-[#e4e7f2]"
                   >
-                    取消
+                    {t.cancel}
                   </button>
                 )}
               </div>
@@ -127,11 +129,11 @@ export function App() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3 rounded-xl bg-[#111219] border border-[#232533]">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-medium text-[#f0f2f8]">
-                  已解密令牌 ({accounts.length})
+                  {t.decryptedCount(accounts.length)}
                 </span>
                 {batchInfo?.batchSize && batchInfo.batchSize > 1 && (
                   <span className="text-[11px] px-2 py-0.5 rounded bg-[#1d1f2e] text-[#8e98b0] border border-[#2c3148]">
-                    批次 {(batchInfo.batchIndex ?? 0) + 1} / {batchInfo.batchSize}
+                    {t.batchBadge((batchInfo.batchIndex ?? 0) + 1, batchInfo.batchSize)}
                   </span>
                 )}
               </div>
@@ -144,7 +146,7 @@ export function App() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="搜索服务或账号..."
+                    placeholder={t.searchPlaceholder}
                     className="w-full bg-[#0b0c13] border border-[#222434] focus:border-[#5e6ad2] rounded-lg pl-8 pr-3 py-1.5 text-xs text-[#e1e4ee] placeholder-[#53586b] outline-none transition-colors"
                   />
                 </div>
@@ -153,10 +155,10 @@ export function App() {
                 <button
                   onClick={() => setShowAppendScanner(true)}
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-[#1a1c29] hover:bg-[#232638] text-[#c9cfdf] border border-[#2b2f44] rounded-lg transition-colors whitespace-nowrap"
-                  title="Google 导出账号较多时可能会生成多张二维码，可继续扫描追加"
+                  title={t.appendTip}
                 >
                   <PlusCircle className="w-3.5 h-3.5" />
-                  <span>追加二维码</span>
+                  <span>{t.appendBtn}</span>
                 </button>
 
                 {/* Batch Export */}
@@ -165,7 +167,7 @@ export function App() {
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-[#5e6ad2] hover:bg-[#6c79e6] text-white rounded-lg transition-colors whitespace-nowrap"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  <span>批量导出</span>
+                  <span>{t.exportBtn}</span>
                 </button>
               </div>
             </div>
@@ -185,7 +187,7 @@ export function App() {
               </div>
             ) : (
               <div className="text-center py-16 text-xs text-[#6e7488]">
-                未匹配到符合搜索条件的账号
+                {t.noMatch}
               </div>
             )}
           </div>
@@ -210,7 +212,7 @@ export function App() {
 
       {/* Minimal Footer */}
       <footer className="border-t border-[#1a1c26] py-4 text-center text-[11px] text-[#555a6d] flex items-center justify-center gap-3">
-        <span>GoogleOTP2Other · 本地纯离线处理，保障凭据安全私密</span>
+        <span>{t.footerPrivacy}</span>
         <span>·</span>
         <a
           href="https://github.com/Nash-x9/GoogleOPT2Other"
@@ -218,7 +220,7 @@ export function App() {
           rel="noopener noreferrer"
           className="text-[#717684] hover:text-[#d3d8ed] transition-colors"
         >
-          GitHub 仓库
+          {t.githubRepo}
         </a>
       </footer>
     </div>

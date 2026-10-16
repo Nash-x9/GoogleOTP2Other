@@ -1,6 +1,7 @@
 import { useState, type FC } from 'react'
 import { X, Copy, Check, FileText, Download } from 'lucide-react'
 import type { DecodedOtpAccount } from '../lib/google-authenticator'
+import { useI18n } from '../lib/i18n.tsx'
 
 interface ExportModalProps {
   accounts: DecodedOtpAccount[]
@@ -8,6 +9,7 @@ interface ExportModalProps {
 }
 
 export const ExportModal: FC<ExportModalProps> = ({ accounts, onClose }) => {
+  const { t } = useI18n()
   const [copied, setCopied] = useState(false)
 
   const allUris = accounts.map((a) => a.otpauthUri).join('\n')
@@ -84,9 +86,9 @@ export const ExportModal: FC<ExportModalProps> = ({ accounts, onClose }) => {
         </button>
 
         <div className="mb-4">
-          <div className="text-base font-semibold text-[#f4f4f5]">批量导出令牌</div>
+          <div className="text-base font-semibold text-[#f4f4f5]">{t.exportModalTitle}</div>
           <div className="text-xs text-[#8a91a5] mt-0.5">
-            共计 {accounts.length} 个解密令牌，可保存为文本、JSON 或 CSV
+            {t.exportModalDesc(accounts.length)}
           </div>
         </div>
 
@@ -106,7 +108,7 @@ export const ExportModal: FC<ExportModalProps> = ({ accounts, onClose }) => {
             className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-medium bg-[#191a27] hover:bg-[#222436] text-[#cbd1e5] border border-[#2a2d40] transition-colors"
           >
             <Download className="w-3.5 h-3.5 text-[#7e8ce0]" />
-            <span>下载 JSON 文件</span>
+            <span>{t.downloadJson}</span>
           </button>
 
           <button
@@ -114,7 +116,7 @@ export const ExportModal: FC<ExportModalProps> = ({ accounts, onClose }) => {
             className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-medium bg-[#191a27] hover:bg-[#222436] text-[#cbd1e5] border border-[#2a2d40] transition-colors"
           >
             <Download className="w-3.5 h-3.5 text-[#34d399]" />
-            <span>下载 CSV 表格</span>
+            <span>{t.downloadCsv}</span>
           </button>
         </div>
 
@@ -124,7 +126,7 @@ export const ExportModal: FC<ExportModalProps> = ({ accounts, onClose }) => {
             className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-medium bg-[#191a27] hover:bg-[#222436] text-[#cbd1e5] border border-[#2a2d40] transition-colors"
           >
             <FileText className="w-3.5 h-3.5" />
-            <span>下载 URI 列表 (.txt)</span>
+            <span>{t.downloadTxt}</span>
           </button>
 
           <button
@@ -132,7 +134,7 @@ export const ExportModal: FC<ExportModalProps> = ({ accounts, onClose }) => {
             className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-medium bg-[#5e6ad2] hover:bg-[#6e7ae3] text-white transition-colors"
           >
             {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{copied ? '已复制全部' : '复制全部 URI'}</span>
+            <span>{copied ? t.copiedAll : t.copyAll}</span>
           </button>
         </div>
       </div>
