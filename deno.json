@@ -1,0 +1,10 @@
+{
+  "name": "googleotp2other",
+  "version": "1.0.0",
+  "tasks": {
+    "start": "deno run --allow-net --allow-read server.ts"
+  },
+  "imports": {
+    "@std/http": "jsr:@std/http@^1.0.12"
+  }
+}

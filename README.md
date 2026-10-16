@@ -1,6 +1,22 @@
 # GoogleOTP2Other
 
-Google Authenticator 迁移解密与通用二维码转换工具。
+> Google Authenticator 迁移解密与通用二维码转换工具。
+
+[![GitHub License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Nash--x9%2FGoogleOPT2Other-181717?logo=github)](https://github.com/Nash-x9/GoogleOPT2Other)
+[![Deploy with GitHub Pages](https://github.com/Nash-x9/GoogleOPT2Other/actions/workflows/deploy.yml/badge.svg)](https://github.com/Nash-x9/GoogleOPT2Other/actions/workflows/deploy.yml)
+
+### 一键部署到免费平台
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Nash-x9/GoogleOPT2Other)
+&nbsp;
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Nash-x9/GoogleOPT2Other)
+&nbsp;
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Nash-x9/GoogleOPT2Other)
+&nbsp;
+[![Deploy to Deno](https://shield.deno.dev/deno-deploy)](https://dash.deno.com/new?url=https://github.com/Nash-x9/GoogleOPT2Other)
+
+---
 
 支持扫描或上传 Google Authenticator 导出的迁移二维码，在浏览器本地离线解密 Protobuf 载荷，还原标准 Base32 密钥，并实时生成标准 TOTP/HOTP 绑定二维码，供 1Password、Bitwarden、Microsoft Authenticator、2FAS、Aegis 等双重认证工具直接导入。
 
@@ -22,6 +38,51 @@ Google Authenticator 迁移解密与通用二维码转换工具。
 点击任意账号即可查看标准 TOTP 绑定二维码，供 1Password、Bitwarden、2FAS 等应用直接扫码绑定，或一键复制密钥与 otpauth URI：
 
 ![二维码详情界面](docs/images/qr-modal.png)
+
+---
+
+## 免费静态托管与一键部署
+
+本项目打包后为单一自包含的纯静态 HTML，所有数据处理纯客户端运行。点击下方任意图标即可直达对应平台快速上线：
+
+| 托管平台 | 一键部署图标 | 说明与配置支持 |
+| :--- | :--- | :--- |
+| **Cloudflare Workers / Pages** | [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Nash-x9/GoogleOPT2Other) | 免费全球 CDN 加速。已预置 [`wrangler.toml`](wrangler.toml) 与 [`wrangler.jsonc`](wrangler.jsonc) |
+| **Vercel** | [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Nash-x9/GoogleOPT2Other) | 自动识别 Vite 框架并编译。已预置 [`vercel.json`](vercel.json) |
+| **Netlify** | [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Nash-x9/GoogleOPT2Other) | 一键连接 Git 仓库自动发布。已预置 [`netlify.toml`](netlify.toml) |
+| **Deno Deploy** | [![Deploy to Deno](https://shield.deno.dev/deno-deploy)](https://dash.deno.com/new?url=https://github.com/Nash-x9/GoogleOPT2Other) | 边缘节点托管。已预置 [`deno.json`](deno.json) 与 [`server.ts`](server.ts) 静态服务 |
+| **GitHub Pages** | [![Fork & Deploy](https://img.shields.io/badge/Fork_%26_Deploy-GitHub_Pages-22272e?logo=github&logoColor=white)](https://github.com/Nash-x9/GoogleOPT2Other/fork) | 已内置 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)，Fork 后开启 Pages 即全自动构建 |
+| **纯本地离线使用** | [下载 dist/index.html](https://raw.githubusercontent.com/Nash-x9/GoogleOPT2Other/main/dist/index.html) | 无需任何服务器或环境，单文件双击即可在浏览器内完全断网使用 |
+
+### 平台手动部署与构建说明
+
+<details>
+<summary><b>展开查看各平台命令行或手动部署流程</b></summary>
+
+#### 1. GitHub Pages
+1. 点击上方 **Fork & Deploy** 复制仓库到你的 GitHub 账号。
+2. 进入仓库 **Settings** -> **Pages**，在 **Build and deployment** -> **Source** 中选择 **GitHub Actions**。
+3. 之后任何提交均会自动触发 CI/CD 构建部署。
+
+#### 2. Cloudflare CLI 手动部署
+```bash
+# 本地编译产物
+pnpm build
+
+# 使用 Wrangler 直接上传至 Cloudflare Pages
+npx wrangler pages deploy dist --project-name=googleotp2other
+```
+
+#### 3. Deno CLI 手动部署
+```bash
+# 启动本地 Deno 静态服务
+deno task start
+
+# 使用 Deployctl 命令行部署
+deployctl deploy --project=googleotp2other server.ts
+```
+
+</details>
 
 ---
 
